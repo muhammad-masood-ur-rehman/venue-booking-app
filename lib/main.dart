@@ -108,32 +108,44 @@ class _MyHomePageState extends State<MyHomePage> {
                   textAlign: TextAlign.center,
                   'YOUR ONLY VENUE BOOKING COMPANION',
                   style: TextStyle(
-                      fontSize: 25,
+                      fontSize: 30,
+                      fontStyle: FontStyle.italic,
+                      color: Color(0xFF2661FA),
                       fontWeight: FontWeight.bold,
                       fontFamily: GoogleFonts.josefinSans().fontFamily),
                 ),
               ),
-              Material(
-                elevation: 0,
-                color: Color.fromARGB(255, 148, 212, 238),
-                borderRadius: BorderRadius.circular(20),
-                child: MaterialButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/login');
-                  },
-                  minWidth: 220,
-                  height: 60,
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(80.0)),
+                  backgroundColor: Colors.white,
+                  padding: const EdgeInsets.all(0),
+                ),
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 50.0,
+                  width: 340,
+                  decoration: new BoxDecoration(
+                      borderRadius: BorderRadius.circular(80.0),
+                      gradient: new LinearGradient(colors: [
+                        Color.fromARGB(255, 255, 136, 34),
+                        Color.fromARGB(255, 255, 177, 41)
+                      ])),
+                  padding: const EdgeInsets.all(0),
                   child: Text(
-                    'Continue',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: GoogleFonts.josefinSans().fontFamily,
-                    ),
+                    "CONTINUE",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

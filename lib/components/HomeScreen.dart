@@ -101,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xFFEEEFF4),
+        backgroundColor: Colors.white,
         appBar: RoundedAppBar(
           appBarHeight: 80,
           leading: Column(
@@ -114,8 +114,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   "WELCOME,",
                   style: TextStyle(
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    fontFamily: GoogleFonts.josefinSans().fontFamily,
+                    fontFamily: GoogleFonts.dancingScript().fontFamily,
                   ),
                 ),
               ),
@@ -132,78 +133,86 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        body: ListView(
-          children: [
-            //Popular Listings
-            Container(
-              height: 30,
-              margin: const EdgeInsets.only(top: 15, right: 180),
-              decoration: const BoxDecoration(
-                  color: Color(0XFF050664),
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(10.0),
-                      bottomRight: Radius.circular(10.0))),
-              child: const Center(
-                  child: Text(
-                "Popular Bookings",
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
-              )),
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/homebg.png'),
+              fit: BoxFit.cover,
             ),
-            // Swipper of Popular Listings
-            Container(
-                margin: EdgeInsets.only(top: 15),
-                height: 200,
-                width: 250,
-                child: Swiper(
-                  itemBuilder: (context, index) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        popularImages[index],
-                        fit: BoxFit.fill,
-                      ),
-                    );
-                  },
-                  autoplay: true,
-                  itemCount: popularImages.length,
-                  scrollDirection: Axis.horizontal,
-                  itemWidth: 250.0,
-                  layout: SwiperLayout.STACK,
-                  // pagination:
-                  //     const SwiperPagination(alignment: Alignment.bottomCenter),
-                  // control: const SwiperControl(),
+          ),
+          child: ListView(
+            children: [
+              //Popular Listings
+              Container(
+                height: 30,
+                margin: const EdgeInsets.only(top: 15, right: 180),
+                decoration: const BoxDecoration(
+                    color: Color(0XFF2262FA),
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10.0),
+                        bottomRight: Radius.circular(10.0))),
+                child: const Center(
+                    child: Text(
+                  "Popular Bookings",
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w700),
                 )),
-            SizedBox(
-              height: 15,
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 10, right: 10),
-              decoration: BoxDecoration(
-                  color: Color(0XFF050664),
-                  borderRadius: BorderRadius.circular(10)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    "Find Your Venue",
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w700),
-                  ),
-                  IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.sort,
-                        color: Colors.white,
-                      ))
-                ],
               ),
-            ),
-            Column(
-              children: imageContainers,
-            ),
-            const SizedBox(height: 10)
-          ],
+              // Swipper of Popular Listings
+              Container(
+                  margin: EdgeInsets.only(top: 15),
+                  height: 200,
+                  width: 300,
+                  child: Swiper(
+                    itemBuilder: (context, index) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          popularImages[index],
+                          fit: BoxFit.fill,
+                        ),
+                      );
+                    },
+                    autoplay: true,
+                    itemCount: popularImages.length,
+                    scrollDirection: Axis.horizontal,
+                    itemWidth: 300.0,
+                    layout: SwiperLayout.STACK,
+                    // pagination:
+                    //     const SwiperPagination(alignment: Alignment.bottomCenter),
+                    // control: const SwiperControl(),
+                  )),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 10, right: 10),
+                decoration: BoxDecoration(
+                    color: Color(0XFF2660FC),
+                    borderRadius: BorderRadius.circular(10)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Find Your Venue",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w700),
+                    ),
+                    IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.sort,
+                          color: Colors.white,
+                        ))
+                  ],
+                ),
+              ),
+              Column(
+                children: imageContainers,
+              ),
+              const SizedBox(height: 10)
+            ],
+          ),
         ));
   }
 }
@@ -224,7 +233,8 @@ class RoundedAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0XFF050664), // Customize the background color here
+        color: Color.fromARGB(
+            255, 92, 132, 245), // Customize the background color here
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(16.0),
           bottomRight: Radius.circular(16.0),

@@ -166,7 +166,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
                 children: [
                   Container(
                     margin: EdgeInsets.only(top: 40, left: 30),
-                    width: 250,
+                    width: 300,
                     height: 150,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade200,
@@ -220,11 +220,13 @@ class _ServicesScreenState extends State<ServicesScreen> {
                           ],
                         ),
                         Container(
-                          width: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
+                          width: 250,
+                          decoration: new BoxDecoration(
+                              borderRadius: BorderRadius.circular(80.0),
+                              gradient: new LinearGradient(colors: [
+                                Color.fromARGB(255, 255, 136, 34),
+                                Color.fromARGB(255, 255, 177, 41)
+                              ])),
                           alignment: Alignment.center,
                           child: Text(
                             textAlign: TextAlign.center,
@@ -238,11 +240,11 @@ class _ServicesScreenState extends State<ServicesScreen> {
                     ),
                   ),
                   Positioned(
-                    top: 0,
-                    left: 0,
+                    top: 20,
+                    left: 20,
                     child: Container(
-                      width: 100,
-                      height: 150,
+                      width: 80,
+                      height: 80,
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage('assets/${option.category}.png'),
@@ -277,10 +279,50 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: packageContainers,
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/servicesbg.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 75,
+                padding: EdgeInsets.only(
+                  left: 10,
+                  top: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: Color(0xffBCC6CC),
+                  borderRadius: BorderRadius.only(
+                      bottomRight: Radius.circular(40.0),
+                      bottomLeft: Radius.circular(40.0)),
+                ),
+                child: Text(
+                  "Package Details",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF2661FA),
+                      fontSize: 36),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: packageContainers,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
