@@ -13,7 +13,10 @@ class _ArViewImageState extends State<ArViewImage> {
   @override
   Widget build(BuildContext context) {
     return Panorama(
-      child: Image.network("${widget.imageURL}?cs=tinysrgb&dpr=2&h=750&w=1260"),
+      animSpeed: 1,
+      sensorControl: SensorControl.Orientation,
+      child: Image.network(
+          "${widget.imageURL}?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"),
     );
   }
 }

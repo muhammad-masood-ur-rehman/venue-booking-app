@@ -11,7 +11,8 @@ import 'package:slideupscreen/blurred_popup.dart';
 import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final String userName;
+  const HomeScreen({Key? key, required this.userName}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -122,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Container(
                 padding: EdgeInsets.only(left: 30, top: 5),
-                child: Text("{name_of_user}"),
+                child: Text(widget.userName),
               )
             ],
           ),

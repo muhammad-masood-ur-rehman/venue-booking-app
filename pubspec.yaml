@@ -42,6 +42,7 @@ dependencies:
   url_launcher: ^6.1.11
   panorama: ^0.4.1
   gif: ^2.2.0
+  shared_preferences: ^2.1.2
 
 dev_dependencies:
   flutter_test:

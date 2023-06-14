@@ -1,8 +1,57 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:venue_connect/components/Register.dart';
 import 'package:venue_connect/components/HomeScreen.dart';
+import 'package:http/http.dart' as http;
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<void> loginUser() async {
+    final userName = userNameController.text;
+    final password = passwordController.text;
+    final url =
+        'https://venueconnect.azurewebsites.net/api/userSignIn/$userName/$password';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        final exists = jsonResponse['exists'] as bool;
+
+        if (exists) {
+          debugPrint("User logged in successfully");
+          // Save the user's name to SharedPreferences
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('name', userNameController.text);
+
+          // Navigate to the desired screen
+          // ignore: use_build_context_synchronously
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomeScreen(userName: userName)),
+          );
+        } else {
+          debugPrint('Invalid username or password');
+        }
+      } else {
+        debugPrint(response.body);
+      }
+    } catch (error) {
+      debugPrint('Error logging in: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -59,6 +108,7 @@ class LoginScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   margin: EdgeInsets.symmetric(horizontal: 40),
                   child: TextField(
+                    controller: userNameController,
                     decoration: InputDecoration(labelText: "Username"),
                   ),
                 ),
@@ -67,6 +117,7 @@ class LoginScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   margin: EdgeInsets.symmetric(horizontal: 40),
                   child: TextField(
+                    controller: passwordController,
                     decoration: InputDecoration(labelText: "Password"),
                     obscureText: true,
                   ),
@@ -85,10 +136,7 @@ class LoginScreen extends StatelessWidget {
                   margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomeScreen()));
+                      loginUser();
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(

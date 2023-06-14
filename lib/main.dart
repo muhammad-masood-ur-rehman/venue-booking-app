@@ -10,6 +10,26 @@ void main() {
   runApp(const MyApp());
 }
 
+LinearGradient gradient = LinearGradient(
+  colors: [
+    Color.fromARGB(255, 255, 136, 34),
+    Color.fromARGB(255, 255, 177, 41),
+  ],
+);
+
+MaterialColor customSwatch = MaterialColor(0xFF2661FA, {
+  50: gradient.colors[0],
+  100: gradient.colors[0],
+  200: gradient.colors[0],
+  300: gradient.colors[0],
+  400: gradient.colors[0],
+  500: gradient.colors[1],
+  600: gradient.colors[1],
+  700: gradient.colors[1],
+  800: gradient.colors[1],
+  900: gradient.colors[1],
+});
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -20,13 +40,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: customSwatch,
       ),
       home: SplashScreen(),
-      routes: {
-        '/home': (context) => HomeScreen(),
-        '/login': (context) => LoginScreen()
-      },
+      routes: {'/login': (context) => LoginScreen()},
     );
   }
 }

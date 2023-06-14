@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -29,7 +30,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
         dateStrings.map((dateString) => DateTime.parse(dateString)).toList();
   }
 
-  void openCalendar() async {
+  void openCalendar(String price, String category) async {
     final DateTime today = DateTime.now();
     final DateTime minDate =
         today.subtract(Duration(days: 1)); // Disable past dates
@@ -50,8 +51,42 @@ class _ServicesScreenState extends State<ServicesScreen> {
       lastDate: today.add(
           Duration(days: 365)), // Limit the date range to one year from today
     );
+    if (pickedDate != null) {
+      final prefs = await SharedPreferences.getInstance();
+      final name = prefs.getString("name");
+      final phone = prefs.getInt("UserContact");
+      const url = 'https://venueconnect.azurewebsites.net/api/booking';
+      final body = jsonEncode({
+        'name': name,
+        'phoneNumber': phone,
+        'address': widget.address,
+        'packageType': category,
+        'packagePrice': price,
+        'bookedDate': pickedDate.toString(),
+      });
+      try {
+        final response = await http.post(
+          Uri.parse(url),
+          headers: {'Content-Type': 'application/json'},
+          body: body,
+        );
+
+        if (response.statusCode == 201) {
+          // Booking successful
+          print('Booking done successfully');
+        } else {
+          // Booking failed
+          print('Failed to book the venue: ${response.body}');
+        }
+      } catch (error) {
+        // Error handling
+        print('Error booking the venue: $error');
+      }
+    }
 
     if (pickedDate != null) {
+      // Payment Gateway 💸
+      openURLWithParams(widget.name, price);
       print('Selected date: $pickedDate');
     }
   }
@@ -87,10 +122,11 @@ class _ServicesScreenState extends State<ServicesScreen> {
   //   }
   // }
 
-  Future<void> fetchBookedDates(String address) async {
+  Future<void> fetchBookedDates(
+      String address, String price, String category) async {
     debugPrint(address);
     final url = Uri.parse(
-        'https://venueconnect.azurewebsites.net/api/booking/123 Main St/bookedDates');
+        'https://venueconnect.azurewebsites.net/api/booking/$address/bookedDates');
 
     final response = await http.get(url);
 
@@ -103,11 +139,11 @@ class _ServicesScreenState extends State<ServicesScreen> {
       parseAndStoreDates(responseData);
 
       // After storing the dates, open the calendar
-      openCalendar();
+      openCalendar(price, category);
     } else {
       // Error in API call
       print('Request failed with status: ${response.statusCode}.');
-      openCalendar();
+      openCalendar(price, category);
     }
   }
 
@@ -158,14 +194,13 @@ class _ServicesScreenState extends State<ServicesScreen> {
             child: GestureDetector(
               onTap: () {
                 debugPrint("Package is Tapped!!");
-                fetchBookedDates(widget.address);
-                // Payment Gateway 💸
-                // openURLWithParams(widget.name, option.price);
+                fetchBookedDates(widget.address, option.price, option.category);
               },
               child: Stack(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 40, left: 30),
+                    margin: EdgeInsets.only(top: 40, left: 30, right: 10),
+                    padding: EdgeInsets.only(right: 10),
                     width: 300,
                     height: 150,
                     decoration: BoxDecoration(
@@ -288,38 +323,38 @@ class _ServicesScreenState extends State<ServicesScreen> {
               fit: BoxFit.cover,
             ),
           ),
-          child: Column(
+          child: ListView(
             children: [
               Container(
                 width: double.infinity,
-                height: 75,
-                padding: EdgeInsets.only(
+                height: 60,
+                padding: const EdgeInsets.only(
                   left: 10,
                   top: 10,
                 ),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color(0xffBCC6CC),
                   borderRadius: BorderRadius.only(
                       bottomRight: Radius.circular(40.0),
                       bottomLeft: Radius.circular(40.0)),
                 ),
-                child: Text(
+                child: const Text(
                   "Package Details",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
                       color: Color(0xFF2661FA),
-                      fontSize: 36),
-                  textAlign: TextAlign.left,
+                      fontSize: 28),
+                  textAlign: TextAlign.center,
                 ),
-              ),
-              SizedBox(
-                height: 40,
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: packageContainers,
               ),
+              const SizedBox(
+                height: 10,
+              )
             ],
           ),
         ),

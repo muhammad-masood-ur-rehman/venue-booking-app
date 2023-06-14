@@ -1,8 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:venue_connect/components/Login.dart';
-import 'package:venue_connect/components/HomeScreen.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatelessWidget {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -39,9 +47,12 @@ class RegisterScreen extends StatelessWidget {
               right: 0,
               child: Image.asset("assets/footer2.png", width: size.width),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            ListView(
+              // mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                const SizedBox(
+                  height: 80,
+                ),
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.symmetric(horizontal: 40),
@@ -59,6 +70,7 @@ class RegisterScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   margin: EdgeInsets.symmetric(horizontal: 40),
                   child: TextField(
+                    controller: nameController,
                     decoration: InputDecoration(labelText: "Name"),
                   ),
                 ),
@@ -67,6 +79,8 @@ class RegisterScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   margin: EdgeInsets.symmetric(horizontal: 40),
                   child: TextField(
+                    controller: phoneNumberController,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(labelText: "Mobile Number"),
                   ),
                 ),
@@ -75,6 +89,7 @@ class RegisterScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   margin: EdgeInsets.symmetric(horizontal: 40),
                   child: TextField(
+                    controller: userNameController,
                     decoration: InputDecoration(labelText: "Username"),
                   ),
                 ),
@@ -83,6 +98,7 @@ class RegisterScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   margin: EdgeInsets.symmetric(horizontal: 40),
                   child: TextField(
+                    controller: passwordController,
                     decoration: InputDecoration(labelText: "Password"),
                     obscureText: true,
                   ),
@@ -93,10 +109,44 @@ class RegisterScreen extends StatelessWidget {
                   margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomeScreen()));
+                      final url =
+                          'https://venueconnect.azurewebsites.net/api/createuser';
+                      final body = jsonEncode({
+                        'name': nameController.text,
+                        'phone_number': phoneNumberController.text,
+                        'user_name': userNameController.text,
+                        'password': passwordController.text,
+                      });
+
+                      http
+                          .post(
+                        Uri.parse(url),
+                        headers: {'Content-Type': 'application/json'},
+                        body: body,
+                      )
+                          .then((response) async {
+                        if (response.statusCode == 200) {
+                          // Request was successful, handle the response
+                          print('User registered successfully');
+
+                          // Save the user's name to SharedPreferences
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.setInt('UserContact',
+                              int.parse(phoneNumberController.text));
+                          // Navigate to the desired screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginScreen()),
+                          );
+                        } else {
+                          // Request failed, handle the error
+                          print('Failed to register user: ${response.body}');
+                        }
+                      }).catchError((error) {
+                        // Request encountered an error, handle the error
+                        print('Error registering user: $error');
+                      });
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
